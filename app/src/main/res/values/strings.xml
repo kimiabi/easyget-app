@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">easyget</string>
+    <string name="login_google_label">Ingresar con Google</string>
+    <string name="login_email_label">Ingresar con correo</string>
+    <string name="signout_label">Salir</string>
+    <string name="email_label">Ingresar correo electrónico</string>
+    <string name="password_label">Ingresar contraseña</string>
+    <string name="login_label">Ingresar</string>
+    <string name="create_account_label">CREAR CUENTA</string>
+    <string name="name_label_hint">Nombre</string>
+    <string name="last_name_label_hint">Apellido</string>
+    <string name="email_label_hint">Email</string>
+    <string name="password_label_hint">Contraseña</string>
+    <string name="password_confirm_label_hint">Confirmar contraseña</string>
+    <string name="disclaimer">Al continuar implica que has leido y aceptas los  Terminos de servicio y Politica de Privacidad</string>
+    <string name="no_account_label">¿Aun no tienes cuenta ?</string>
+    <string name="close_label">Cerrar</string>
+    <string name="oh">Oh!</string>
+    <string name="bad_message">Algo salió mal, referencia: </string>
+    <string name="invalid_mail">Formato de correo invalido</string>
+    <string name="invalid_password">Minimo 6 caracteres y sin espacios!</string>
+    <string name="invalid_field">Formato invalido</string>
+    <string name="passwords_no_equals">Las constraseñas no coinciden</string>
+    <string name="home_label">Home</string>
+    <string name="lists_label">Listas</string>
+    <string name="ofert_label">Ofertas</string>
+    <string name="categories_label">Categorias</string>
+    <string name="account_label">Cuenta</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_offer_btn">AGREGAR +</string>
+    <string name="add_popular_btn">AGREGAR +</string>
+</resources>

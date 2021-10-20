@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "323282842764",
+    "project_id": "easyget-km",
+    "storage_bucket": "easyget-km.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323282842764:android:f290a986cc0f1d3c05b7a9",
+        "android_client_info": {
+          "package_name": "com.kimi.easyget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323282842764-ppk7sdaa5kgd3esj47qn91bcf43b06cp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kimi.easyget",
+            "certificate_hash": "48bceeaf5f66a1808eabb16ae183d733899f620c"
+          }
+        },
+        {
+          "client_id": "323282842764-ugg128s4ivpo4c30glucc83mnl57ce5r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzjrJ6Xat5P5hqgu6mdoiRA3QMmjrbQmY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323282842764-ugg128s4ivpo4c30glucc83mnl57ce5r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_option"
+        android:enabled="true"
+        android:icon="@drawable/outline_home_24"
+        android:title="@string/home_label"/>
+    <item
+        android:id="@+id/lists_option"
+        android:enabled="true"
+        android:icon="@drawable/outline_format_list_bulleted_24"
+        android:title="@string/lists_label"/>
+    <item
+        android:id="@+id/ofert_option"
+        android:enabled="true"
+        android:icon="@drawable/outline_savings_24"
+        android:title="@string/ofert_label"/>
+    <item
+        android:id="@+id/categories_options"
+        android:enabled="true"
+        android:icon="@drawable/outline_category_24"
+        android:title="@string/categories_label"/>
+    <item
+        android:id="@+id/accout_option"
+        android:enabled="true"
+        android:icon="@drawable/outline_account_circle_24"
+        android:title="@string/account_label"/>
+
+</menu>
