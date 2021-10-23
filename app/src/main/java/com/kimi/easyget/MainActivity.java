@@ -23,6 +23,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.kimi.easyget.cart.CartFragment;
 import com.kimi.easyget.cart.model.ProductTransaction;
 import com.kimi.easyget.cart.model.UserShoppingCart;
 import com.kimi.easyget.categories.CategoriesFragment;
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         final UserShoppingCart userShoppingCart = UserShoppingCart.builder()
                 .user(user)
                 .products(products)
-                .updatedAt(FieldValue.serverTimestamp())
                 .build();
 
         db.collection("userShoppingCarts")
@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_cart: {
                 Log.d("hola", "hice click");
+                addFragment(new CartFragment());
                 return true;
             }
         }

@@ -22,9 +22,7 @@ import static lombok.AccessLevel.NONE;
 public class UserShoppingCart implements Serializable {
     private List<ProductTransaction> products;
     private User user;
-    FieldValue createdAt;
     String createdBy;
-    FieldValue updatedAt;
 
     @Getter(NONE)
     Boolean enabled;

@@ -3,6 +3,8 @@ package com.kimi.easyget.cart.model;
 import com.google.firebase.firestore.FieldValue;
 import com.google.gson.Gson;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +18,7 @@ import static lombok.AccessLevel.NONE;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductTransaction {
+public class ProductTransaction implements Serializable {
     private String productId;
     private String name;
     private String description;
