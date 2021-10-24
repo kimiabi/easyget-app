@@ -129,6 +129,7 @@ public class HomeFragment extends Fragment {
                 .description(product.getDescription())
                 .photoUrl(product.getPhoto_url())
                 .price(product.getPrice())
+                .totalPrice(product.getPrice())
                 .totalQuantity("1")
                 .offer(true)
                 .enabled(true)
@@ -139,10 +140,14 @@ public class HomeFragment extends Fragment {
 
     private void setSlideContent(final ImageSlider imageSlider) {
         final List<SlideModel> imageList = new ArrayList<>();
+        String url1 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/slidesOffers%2Fsedal.jpg?alt=media&token=9d97bc8d-702c-4bd3-9486-f4c9c1e4ce74";
+        String url2 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/slidesOffers%2Fscot.jpg?alt=media&token=9204279c-412e-434b-9b3f-729807e54727";
+        String url3 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/slidesOffers%2Fpasta.jpg?alt=media&token=cce7562b-91a2-4b60-80b3-a0f38f69a94d";
 
-        imageList.add(new SlideModel("https://bit.ly/2YoJ77H", "The animal population decreased by 58 percent in 42 years.", ScaleTypes.FIT));
-        imageList.add(new SlideModel("https://bit.ly/2BteuF2", "Elephants and tigers may become extinct.", ScaleTypes.FIT));
-        imageList.add(new SlideModel("https://bit.ly/3fLJf72", "And people do that.", ScaleTypes.FIT));
+
+        imageList.add(new SlideModel(url1, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
+        imageList.add(new SlideModel(url2, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
+        imageList.add(new SlideModel(url3, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
         imageSlider.setImageList(imageList);
     }
 }

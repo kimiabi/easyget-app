@@ -35,6 +35,7 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
     public interface OnItemClickListener {
         void onItemClick(final ProductTransaction productTransaction);
         void onItemClickDelete(final ProductTransaction productTransaction);
+        void updateTotalAmount(final int index, final ProductTransaction productTransaction);
     }
 
     @NonNull
@@ -59,7 +60,7 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
         }
 
         viewHolder.productName.setText(product.getName());
-        viewHolder.productPrice.setText(product.getPrice());
+        viewHolder.productPrice.setText(product.getTotalPrice());
         viewHolder.productQuantity.setText(product.getTotalQuantity());
 
         viewHolder.bin(product, i, listener);
@@ -71,7 +72,12 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
         return productTransactions.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public void updateItem(int index, ProductTransaction productTransaction){
+        productTransactions.set(index, productTransaction);
+        this.notifyDataSetChanged();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView productPhoto, productDelete;
         TextView productName, productPrice, productQuantity;
         Button btnMinus, btnPlus;
@@ -87,12 +93,43 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
             btnPlus = itemView.findViewById(R.id.btn_plus_cart);
         }
 
-        public void bin(final ProductTransaction product, final int i, final OnItemClickListener listener) {
+        public void bin(final ProductTransaction product, final int index, final OnItemClickListener listener) {
             productDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     listener.onItemClickDelete(product);
                 }
+            });
+
+            btnPlus.setOnClickListener(view -> {
+                int totalQuantity = Integer.parseInt(product.getTotalQuantity());
+                totalQuantity ++;
+
+                Double totalAmount = Double.parseDouble(product.getPrice()) * totalQuantity;
+
+                product.setTotalQuantity(String.valueOf(totalQuantity));
+                product.setTotalPrice(String.valueOf(totalAmount));
+                updateItem(index, product);
+                listener.updateTotalAmount(index, product);
+
+            });
+
+            btnMinus.setOnClickListener(view -> {
+
+
+                int totalQuantity = Integer.parseInt(product.getTotalQuantity());
+
+                if (totalQuantity >= 1) {
+                    totalQuantity --;
+
+                    Double totalAmount = Double.parseDouble(product.getPrice()) * totalQuantity;
+
+                    product.setTotalQuantity(String.valueOf(totalQuantity));
+                    product.setTotalPrice(String.valueOf(totalAmount));
+                    updateItem(index, product);
+                    listener.updateTotalAmount(index, product);
+                }
+
             });
         }
     }

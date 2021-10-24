@@ -127,22 +127,28 @@ public class CartFragment extends Fragment {
                             final UserShoppingCart userShoppingCarts =
                                     snapshot.toObject(UserShoppingCart.class);
                             productTransactions = userShoppingCarts.getProducts();
-                            final AdapterProductsCart adapterProductsCart = new AdapterProductsCart(userShoppingCarts.getProducts(), getContext(), new AdapterProductsCart.OnItemClickListener() {
+                            final AdapterProductsCart adapterProductsCart = new AdapterProductsCart(productTransactions, getContext(), new AdapterProductsCart.OnItemClickListener() {
                                 @Override
-                                public void onItemClick(ProductTransaction productTransaction) {
+                                public void onItemClick(final ProductTransaction productTransaction) {
 
                                 }
 
                                 @Override
-                                public void onItemClickDelete(ProductTransaction productTransaction) {
+                                public void onItemClickDelete(final ProductTransaction productTransaction) {
                                     removeproductTransaction(productTransaction);
+                                }
+
+                                @Override
+                                public void updateTotalAmount(final int index, final ProductTransaction productTransaction) {
+                                    productTransactions.set(index, productTransaction);
+                                    setTotalAmount(totalAmount, productTransactions);
                                 }
                             });
                             recyclerViewProductsCart.setAdapter(adapterProductsCart);
                             adapterProductsCart.notifyDataSetChanged();
 
-                            final String total = getTotalAmount(userShoppingCarts.getProducts());
-                            totalAmount.setText(total);
+                            setTotalAmount(totalAmount, productTransactions);
+
 
                         } else {
                             Log.d(TAG, "Current data: null");
@@ -180,15 +186,14 @@ public class CartFragment extends Fragment {
                 .collect(Collectors.toList());
     };
 
-    private String getTotalAmount(final List<ProductTransaction> products) {
-
-        Double total = 0.0;
+    private void setTotalAmount(final TextView totalAmount, final List<ProductTransaction> products) {
+        double total = 0.0;
 
         for (ProductTransaction product : products) {
-            total = total + Double.parseDouble(product.getPrice());
+            total = total + Double.parseDouble(product.getTotalPrice());
         }
 
-        return String.valueOf(total);
+        totalAmount.setText(String.valueOf(total));
     }
 
     private User getCurrentUser() {
