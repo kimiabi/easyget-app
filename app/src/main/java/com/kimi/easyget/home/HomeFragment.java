@@ -140,9 +140,9 @@ public class HomeFragment extends Fragment {
 
     private void setSlideContent(final ImageSlider imageSlider) {
         final List<SlideModel> imageList = new ArrayList<>();
-        String url1 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/slidesOffers%2Fsedal.jpg?alt=media&token=9d97bc8d-702c-4bd3-9486-f4c9c1e4ce74";
-        String url2 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/slidesOffers%2Fscot.jpg?alt=media&token=9204279c-412e-434b-9b3f-729807e54727";
-        String url3 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/slidesOffers%2Fpasta.jpg?alt=media&token=cce7562b-91a2-4b60-80b3-a0f38f69a94d";
+        String url1 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/products%2F2.jpg?alt=media&token=672e654b-c769-48de-a092-fab1826ad4d8";
+        String url2 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/products%2F1.jpg?alt=media&token=88e340c1-6ced-49e3-a4eb-88add9e58566";
+        String url3 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/products%2F3.jpg?alt=media&token=b3976230-328c-4df0-a994-5f3e1e3cfaff";
 
 
         imageList.add(new SlideModel(url1, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));

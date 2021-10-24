@@ -2,6 +2,8 @@ package com.kimi.easyget.categories.models;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +17,7 @@ import static lombok.AccessLevel.NONE;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Category {
+public class Category implements Serializable {
     private String id;
     private String name;
     private String description;

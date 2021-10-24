@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,8 +19,10 @@ import android.view.ViewGroup;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
+import com.kimi.easyget.categories.models.CategoriesViewModel;
 import com.kimi.easyget.categories.models.Category;
 import com.kimi.easyget.offer.adapter.AdapterOffers;
+import com.kimi.easyget.products.ProductFragment;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
 
@@ -94,24 +98,39 @@ public class CategoriesFragment extends Fragment {
         recyclerCategories.setLayoutManager(gridLayoutManager);
 
         db.collection("categories")
-                .whereEqualTo("enable", true)
+                .whereEqualTo("enabled", true)
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
                         Log.w("ERR", "Listen failed.", e);
                         return;
                     }
                     final List<Category> categories = value.toObjects(Category.class);
-//                    final AdapterOffers adapterOffers = new AdapterOffers(categories, getContext(),
-//                            new AdapterOffers.OnItemClickListener() {
-//                                @Override
-//                                public void onItemClick(Product product) {
-//                                    final ProductTransaction productTransaction = getProductTransactionResource(product);
-//                                    productTransactionViewModel.selectProduct(productTransaction);
-//                                }
-//                            });
-//                    recyclerCategories.setAdapter(adapterOffers);
-//                    adapterOffers.notifyDataSetChanged();
+
+                    final AdapterCategories adapterCategories = new AdapterCategories(categories, getContext(), new AdapterCategories.OnItemClickListener() {
+                        @Override
+                        public void onItemClik(Category category) {
+                            Log.d("category", String.valueOf(category));
+                            
+                            openProductFragment(category);
+                        }
+                    });
+                    recyclerCategories.setAdapter(adapterCategories);
+                    adapterCategories.notifyDataSetChanged();
                 });
 
+    }
+
+    private void openProductFragment(Category category) {
+        ProductFragment productFragment = ProductFragment.newInstance(category);
+        addFragment(productFragment);
+    }
+
+    private void addFragment(final Fragment fragment) {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack(null)
+                .commit();
     }
 }

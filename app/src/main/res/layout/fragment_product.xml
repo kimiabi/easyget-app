@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".categories.CategoriesFragment">
+    tools:context=".products.ProductFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -25,14 +25,14 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/outline_category_24"/>
+                    android:src="@drawable/outline_workspaces_24"/>
                 <TextView
+                    android:id="@+id/title_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:text="@string/categories_label"/>
+                    android:textStyle="bold"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -44,11 +44,12 @@
             android:orientation="horizontal">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_categories"
+                android:id="@+id/recycler_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
     </LinearLayout>
+
 </FrameLayout>

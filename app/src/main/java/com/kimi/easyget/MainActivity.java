@@ -27,9 +27,12 @@ import com.kimi.easyget.cart.CartFragment;
 import com.kimi.easyget.cart.model.ProductTransaction;
 import com.kimi.easyget.cart.model.UserShoppingCart;
 import com.kimi.easyget.categories.CategoriesFragment;
+import com.kimi.easyget.categories.models.CategoriesViewModel;
+import com.kimi.easyget.categories.models.Category;
 import com.kimi.easyget.home.HomeFragment;
 import com.kimi.easyget.lists.ListsFragment;
 import com.kimi.easyget.offer.OffersFragment;
+import com.kimi.easyget.products.ProductFragment;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
 import com.kimi.easyget.user.AccountFragment;
 import com.kimi.easyget.user.models.User;
@@ -53,16 +56,16 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         setWidget();
+
         final ProductTransactionViewModel productTransactionViewModel =
                 new ViewModelProvider(this).get(ProductTransactionViewModel.class);
         productTransactionViewModel.getSelectedProduct().observe(this, new Observer<ProductTransaction>() {
             @Override
             public void onChanged(ProductTransaction productTransaction) {
-                MainActivity.this.addProductToUserCart(productTransaction);
+                addProductToUserCart(productTransaction);
 
             }
         });
-
     }
 
     private void getProductToUserCart() {
