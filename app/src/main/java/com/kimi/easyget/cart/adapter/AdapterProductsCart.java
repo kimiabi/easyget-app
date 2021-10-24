@@ -34,6 +34,7 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
 
     public interface OnItemClickListener {
         void onItemClick(final ProductTransaction productTransaction);
+        void onItemClickDelete(final ProductTransaction productTransaction);
     }
 
     @NonNull
@@ -87,7 +88,12 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
         }
 
         public void bin(final ProductTransaction product, final int i, final OnItemClickListener listener) {
-
+            productDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClickDelete(product);
+                }
+            });
         }
     }
 }

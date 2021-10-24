@@ -27,6 +27,7 @@ import com.kimi.easyget.cart.model.UserShoppingCart;
 import com.kimi.easyget.user.models.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static android.content.ContentValues.TAG;
 
@@ -44,6 +45,7 @@ public class CartFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
     private TextView totalAmount;
+    private List<ProductTransaction> productTransactions;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -124,10 +126,16 @@ public class CartFragment extends Fragment {
                             Log.d(TAG, "carrito compras succ: " + snapshot.getData());
                             final UserShoppingCart userShoppingCarts =
                                     snapshot.toObject(UserShoppingCart.class);
+                            productTransactions = userShoppingCarts.getProducts();
                             final AdapterProductsCart adapterProductsCart = new AdapterProductsCart(userShoppingCarts.getProducts(), getContext(), new AdapterProductsCart.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(ProductTransaction productTransaction) {
 
+                                }
+
+                                @Override
+                                public void onItemClickDelete(ProductTransaction productTransaction) {
+                                    removeproductTransaction(productTransaction);
                                 }
                             });
                             recyclerViewProductsCart.setAdapter(adapterProductsCart);
@@ -144,6 +152,33 @@ public class CartFragment extends Fragment {
 
 
     }
+
+    private void removeproductTransaction(final ProductTransaction productTransaction) {
+
+        final User user = getCurrentUser();
+        List<ProductTransaction> filteredProducts = getFilteredProducts(productTransaction);
+
+        final UserShoppingCart userShoppingCart = UserShoppingCart.builder()
+                .user(user)
+                .products(filteredProducts)
+                .build();
+
+        db.collection("userShoppingCarts")
+                .document("cart-" + user.getUid())
+                .set(userShoppingCart)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
+                });
+    }
+
+    private List<ProductTransaction> getFilteredProducts(final ProductTransaction productTransaction) {
+        return this.productTransactions.stream()
+                .filter(product -> !product.getProductId().equals(productTransaction.getProductId()) )
+                .collect(Collectors.toList());
+    };
 
     private String getTotalAmount(final List<ProductTransaction> products) {
 
