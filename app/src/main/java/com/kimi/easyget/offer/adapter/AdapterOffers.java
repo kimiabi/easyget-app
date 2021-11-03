@@ -58,6 +58,10 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
             Glide.with(context)
                     .load(product.getPhoto_url())
                     .into(imageView);
+        }else {
+            Glide.with(context)
+                    .load(R.drawable.no_picture)
+                    .into(imageView);
         }
 
         viewHolder.bin(product, i, listener);
