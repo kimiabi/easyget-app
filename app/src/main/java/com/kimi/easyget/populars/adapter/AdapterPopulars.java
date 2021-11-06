@@ -33,6 +33,7 @@ public class AdapterPopulars extends RecyclerView.Adapter<AdapterPopulars.ViewHo
 
     public interface OnItemClickListener {
         void onItemClick(final Product product);
+        void onItemClickSingleProduct(final Product product);
     }
 
 
@@ -79,6 +80,7 @@ public class AdapterPopulars extends RecyclerView.Adapter<AdapterPopulars.ViewHo
         }
 
         public void bin(final Product product, final int i, final OnItemClickListener listener) {
+            itemView.setOnClickListener(view -> listener.onItemClickSingleProduct(product));
             addPopularBtn.setOnClickListener(view -> listener.onItemClick(product));
         }
     }

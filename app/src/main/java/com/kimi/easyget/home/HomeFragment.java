@@ -125,6 +125,11 @@ public class HomeFragment extends Fragment {
                                     final ProductTransaction productTransaction = getProductTransactionResource(product);
                                     productTransactionViewModel.selectProduct(productTransaction);
                                 }
+
+                                @Override
+                                public void onItemClickSingleProduct(Product product) {
+                                    openSingleProductFragment(product);
+                                }
                             });
                     recyclerPopulars.setAdapter(adapterPopulars);
                     adapterPopulars.notifyDataSetChanged();

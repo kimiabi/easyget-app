@@ -115,13 +115,27 @@ public class ProductFragment extends Fragment {
 
                                 @Override
                                 public void onItemClickSingleProduct(Product product) {
-
+                                    openSingleProductFragment(product);
                                 }
                             });
                     recyclerProducts.setAdapter(adapterOffers);
                     adapterOffers.notifyDataSetChanged();
                 });
 
+    }
+
+    private void openSingleProductFragment(final Product product) {
+        SingleProductFragment fragment = SingleProductFragment.newInstance(product);
+        addFragment(fragment);
+    }
+
+    private void addFragment(final Fragment fragment) {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack(null)
+                .commit();
     }
 
     private ProductTransaction getProductTransactionResource(final Product product) {
