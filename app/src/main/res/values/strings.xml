@@ -31,4 +31,8 @@
     <string name="add_offer_btn">AGREGAR +</string>
     <string name="add_popular_btn">AGREGAR +</string>
     <string name="your_list_table">Tus Listas</string>
+    <string name="agregar_al_carrito">AGREGAR AL CARRITO</string>
+    <string name="minus">-</string>
+    <string name="plus">+</string>
+    <string name="descripcion">Descripcion:</string>
 </resources>

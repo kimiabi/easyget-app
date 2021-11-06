@@ -113,6 +113,11 @@ public class OffersFragment extends Fragment {
                                     final ProductTransaction productTransaction = getProductTransactionResource(product);
                                     productTransactionViewModel.selectProduct(productTransaction);
                                 }
+
+                                @Override
+                                public void onItemClickSingleProduct(Product product) {
+
+                                }
                             });
                     recyclerOffers.setAdapter(adapterOffers);
                     adapterOffers.notifyDataSetChanged();
@@ -129,8 +134,8 @@ public class OffersFragment extends Fragment {
                 .price(product.getPrice())
                 .totalPrice(product.getPrice())
                 .totalQuantity("1")
-                .offer(true)
-                .enabled(true)
+                .offer(product.isOffer())
+                .enabled(product.isEnabled())
                 .build();
     }
 }

@@ -21,6 +21,7 @@ import static java.util.Objects.isNull;
 
 public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder> {
 
+    public static final String CURRENCY = "Q ";
     private List<Product> products;
     private Context context;
     private final OnItemClickListener listener;
@@ -35,6 +36,7 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
 
     public interface OnItemClickListener {
         void onItemClick(final Product product);
+        void onItemClickSingleProduct(final Product product);
     }
 
 
@@ -51,6 +53,7 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
 
         final Product product = products.get(i);
         viewHolder.offerName.setText(product.getName());
+        viewHolder.offerPrice.setText(CURRENCY + product.getPrice());
 
         ImageView imageView = ((ViewHolder) viewHolder).offerPhoto;
 
@@ -58,7 +61,7 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
             Glide.with(context)
                     .load(product.getPhoto_url())
                     .into(imageView);
-        }else {
+        } else {
             Glide.with(context)
                     .load(R.drawable.no_picture)
                     .into(imageView);
@@ -76,16 +79,20 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
         TextView offerName;
         Button addOfferBtn;
         ImageView offerPhoto;
+        TextView offerPrice;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             offerName = itemView.findViewById(R.id.offer_name);
             addOfferBtn = itemView.findViewById(R.id.add_offer_btn);
             offerPhoto = itemView.findViewById(R.id.offer_photo);
+            offerPrice = itemView.findViewById(R.id.offer_price);
 
         }
 
         public void bin(final Product product, final int i, final OnItemClickListener listener) {
+
+            itemView.setOnClickListener(view -> listener.onItemClickSingleProduct(product));
             addOfferBtn.setOnClickListener(view -> listener.onItemClick(product));
         }
     }

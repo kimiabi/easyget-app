@@ -119,7 +119,7 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
 
                 int totalQuantity = Integer.parseInt(product.getTotalQuantity());
 
-                if (totalQuantity >= 1) {
+                if (totalQuantity > 1) {
                     totalQuantity --;
 
                     Double totalAmount = Double.parseDouble(product.getPrice()) * totalQuantity;

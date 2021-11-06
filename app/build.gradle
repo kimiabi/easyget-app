@@ -64,4 +64,7 @@ dependencies {
 
     //ImageSlideshow
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
+
+    //CARDVIEW EXPANDABLE
+    implementation 'com.alespero:expandable-cardview:0.8'
 }

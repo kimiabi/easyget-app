@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,8 +21,11 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
+import com.kimi.easyget.categories.models.Category;
 import com.kimi.easyget.offer.adapter.AdapterOffers;
 import com.kimi.easyget.populars.adapter.AdapterPopulars;
+import com.kimi.easyget.products.ProductFragment;
+import com.kimi.easyget.products.SingleProductFragment;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
 
@@ -84,9 +88,14 @@ public class HomeFragment extends Fragment {
                     final AdapterOffers adapterOffers = new AdapterOffers(products, getContext(),
                             new AdapterOffers.OnItemClickListener() {
                                 @Override
-                                public void onItemClick(Product product) {
+                                public void onItemClick(final Product product) {
                                     final ProductTransaction productTransaction = getProductTransactionResource(product);
                                     productTransactionViewModel.selectProduct(productTransaction);
+                                }
+
+                                @Override
+                                public void onItemClickSingleProduct(final Product product) {
+                                    openSingleProductFragment(product);
                                 }
                             });
                     recyclerOffers.setAdapter(adapterOffers);
@@ -131,12 +140,10 @@ public class HomeFragment extends Fragment {
                 .price(product.getPrice())
                 .totalPrice(product.getPrice())
                 .totalQuantity("1")
-                .offer(true)
-                .enabled(true)
+                .offer(product.isOffer())
+                .enabled(product.isEnabled())
                 .build();
     }
-
-
 
     private void setSlideContent(final ImageSlider imageSlider) {
         final List<SlideModel> imageList = new ArrayList<>();
@@ -149,5 +156,19 @@ public class HomeFragment extends Fragment {
         imageList.add(new SlideModel(url2, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
         imageList.add(new SlideModel(url3, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
         imageSlider.setImageList(imageList);
+    }
+
+    private void openSingleProductFragment(final Product product) {
+        SingleProductFragment fragment = SingleProductFragment.newInstance(product);
+        addFragment(fragment);
+    }
+
+    private void addFragment(final Fragment fragment) {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack(null)
+                .commit();
     }
 }

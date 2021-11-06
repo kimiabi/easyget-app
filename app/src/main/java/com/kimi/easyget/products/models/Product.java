@@ -23,6 +23,9 @@ public class Product implements Serializable {
     private String description;
     private String photo_url;
     private String price;
+    private String categoryId;
+    private boolean offer;
+    private String offerPrice;
 
     @Getter(NONE)
     Boolean enabled;
