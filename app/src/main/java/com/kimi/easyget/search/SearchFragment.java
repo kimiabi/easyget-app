@@ -16,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
@@ -23,9 +26,17 @@ import com.kimi.easyget.products.SingleProductFragment;
 import com.kimi.easyget.products.adapter.AdapterProduct;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
+import com.kimi.easyget.search.models.Search;
+import com.kimi.easyget.search.models.SearchResult;
+import com.kimi.easyget.user.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static android.content.ContentValues.TAG;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +51,7 @@ public class SearchFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private ProductTransactionViewModel productTransactionViewModel;
     private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
 
     // TODO: Rename and change types of parameters
     private String query;
@@ -69,6 +81,7 @@ public class SearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         if (getArguments() != null) {
             query = getArguments().getString(QUERY);
         }
@@ -102,11 +115,13 @@ public class SearchFragment extends Fragment {
                         return;
                     }
 
+                    UUID uuid = UUID.randomUUID();
+
                     final List<Product> products = value.toObjects(Product.class);
 
                     final List<Product> filteredProduct = products.stream()
                             .filter(product -> product.getName().toLowerCase().contains(query.toLowerCase()))
-                            .collect(Collectors.toList());
+                            .collect(toList());
                     quantityResult.setText(getString(R.string.results_search, String.valueOf(filteredProduct.size()), query));
                     final AdapterProduct adapterProduct = new AdapterProduct(filteredProduct, getContext(),
                             new AdapterProduct.OnItemClickListener() {
@@ -118,13 +133,52 @@ public class SearchFragment extends Fragment {
 
                                 @Override
                                 public void onItemClickSingleProduct(Product product) {
+                                    registerSearch(filteredProduct, product.getId(), uuid);
                                     openSingleProductFragment(product);
                                 }
                             });
                     recyclerView.setAdapter(adapterProduct);
                     adapterProduct.notifyDataSetChanged();
+                    registerSearch(filteredProduct, null, uuid);
+                });
+
+    }
+
+    private void registerSearch(final List<Product> filteredProduct, final String productId, final UUID uuid) {
+        final User user = getCurrentUser();
+        final List<SearchResult> searchResults = getSearchResultResource(filteredProduct);
+        final Search search = Search.builder()
+                .userId(user.getUid())
+                .registration(FieldValue.serverTimestamp())
+                .key(query)
+                .results(searchResults)
+                .select(productId)
+                .build();
+
+        db.collection("searchModels")
+                .document(String.valueOf(uuid))
+                .set(search)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
                 });
     }
+
+    private List<SearchResult> getSearchResultResource(final List<Product> filteredProduct) {
+
+        final List<SearchResult> searchResults = new ArrayList<>();
+        for (Product product : filteredProduct){
+
+            SearchResult searchResult = SearchResult.builder()
+                    .productId(product.getId())
+                    .build();
+            searchResults.add(searchResult);
+        }
+        return searchResults;
+    }
+
 
     private void openSingleProductFragment(final Product product) {
         SingleProductFragment fragment = SingleProductFragment.newInstance(product);
@@ -152,5 +206,16 @@ public class SearchFragment extends Fragment {
                 .offer(product.isOffer())
                 .enabled(product.isEnabled())
                 .build();
+    }
+
+    private User getCurrentUser() {
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        assert firebaseUser != null;
+        return User.builder()
+                .displayName(firebaseUser.getDisplayName())
+                .email(firebaseUser.getEmail())
+                .uid(firebaseUser.getUid())
+                .build();
+
     }
 }
