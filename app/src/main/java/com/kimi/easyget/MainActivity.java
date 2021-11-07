@@ -1,14 +1,11 @@
 package com.kimi.easyget;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -28,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.kimi.easyget.cart.CartFragment;
@@ -37,10 +35,10 @@ import com.kimi.easyget.categories.CategoriesFragment;
 import com.kimi.easyget.home.HomeFragment;
 import com.kimi.easyget.lists.ListsFragment;
 import com.kimi.easyget.offer.OffersFragment;
-import com.kimi.easyget.products.ProductFragment;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
 import com.kimi.easyget.search.SearchFragment;
 import com.kimi.easyget.user.AccountFragment;
+import com.kimi.easyget.user.models.Session;
 import com.kimi.easyget.user.models.User;
 
 import java.util.ArrayList;
@@ -62,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         setWidget();
+        registerSession();
 
         final ProductTransactionViewModel productTransactionViewModel =
                 new ViewModelProvider(this).get(ProductTransactionViewModel.class);
@@ -72,6 +71,25 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void registerSession() {
+        final User user = getCurrentUser();
+        Session session = Session.builder()
+                .userId(user.getUid())
+                .device("SAMSUNG SM-A205G")
+                .OS("Android 10, API 29")
+                .registration(FieldValue.serverTimestamp())
+                .build();
+
+        db.collection("userSessions")
+                .add(session)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
+                });
     }
 
     private void getProductToUserCart() {
