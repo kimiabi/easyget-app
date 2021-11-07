@@ -1,17 +1,24 @@
 package com.kimi.easyget;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,20 +28,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.kimi.easyget.cart.CartFragment;
 import com.kimi.easyget.cart.model.ProductTransaction;
 import com.kimi.easyget.cart.model.UserShoppingCart;
 import com.kimi.easyget.categories.CategoriesFragment;
-import com.kimi.easyget.categories.models.CategoriesViewModel;
-import com.kimi.easyget.categories.models.Category;
 import com.kimi.easyget.home.HomeFragment;
 import com.kimi.easyget.lists.ListsFragment;
 import com.kimi.easyget.offer.OffersFragment;
 import com.kimi.easyget.products.ProductFragment;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
+import com.kimi.easyget.search.SearchFragment;
 import com.kimi.easyget.user.AccountFragment;
 import com.kimi.easyget.user.models.User;
 
@@ -132,9 +137,56 @@ public class MainActivity extends AppCompatActivity {
 
     private void setWidget() {
         final BottomNavigationView bottomNavigationMenu = findViewById(R.id.main_menu);
+        final FrameLayout cart = findViewById(R.id.cart);
+        textCartItemCount = findViewById(R.id.cart_badge);
         bottomNavigationMenu.setOnNavigationItemSelectedListener(navListener);
         addFragment(new HomeFragment());
         bottomNavigationMenu.setSelectedItemId(R.id.home);
+
+
+        //SEARCHVIEW
+        final SearchView searchProduct = (SearchView)findViewById(R.id.search_product);
+        View v = searchProduct.findViewById(R.id.search_plate);
+        v.setBackgroundColor(getColor(R.color.white));
+        EditText searchEditText = searchProduct.findViewById(R.id.search_src_text);
+        searchEditText.setTextColor(getColor(R.color.black));
+        searchEditText.setHintTextColor(getColor(R.color.gris_sof));
+        ImageView icon = searchProduct.findViewById(R.id.search_button);
+        icon.setColorFilter(Color.BLACK);
+        searchProduct.setFocusable(false);
+        searchProduct.setIconified(false);
+        searchProduct.setIconifiedByDefault(false);
+        searchProduct.clearFocus();
+
+        searchProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Click lis", "hola");
+            }
+        });
+
+        searchProduct.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                SearchFragment searchFragment = SearchFragment.newInstance(query);
+                addFragment(searchFragment);
+                searchProduct.setQuery("", false);
+                searchProduct.clearFocus();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("Click lis", "hola");
+                return false;
+            }
+        });
+
+
+        cart.setOnClickListener(view -> addFragment(new CartFragment()));
+
+        getProductToUserCart();
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
@@ -172,11 +224,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        final MenuItem menuItem = menu.findItem(R.id.action_cart);
-        View actionView = menuItem.getActionView();
-        textCartItemCount = actionView.findViewById(R.id.cart_badge);
-        actionView.setOnClickListener(view -> onOptionsItemSelected(menuItem));
-        getProductToUserCart();
+//        final MenuItem menuItem = menu.findItem(R.id.action_cart);
+//        View actionView = menuItem.getActionView();
+//        textCartItemCount = actionView.findViewById(R.id.cart_badge);
+//        actionView.setOnClickListener(view -> onOptionsItemSelected(menuItem));
+
+
         return true;
     }
 
@@ -216,5 +269,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        return super.onSearchRequested();
     }
 }

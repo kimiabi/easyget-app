@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".user.AccountFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -10,39 +11,100 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="20dp"
         android:gravity="center"
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
-        <ImageView
-            android:id="@+id/photo_user"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
-
-        <TextView
-            android:id="@+id/name_user"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center" />
+            android:layout_height="250dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@color/gold_rose">
+            <ImageView
+                android:id="@+id/photo_user"
+                android:layout_width="150dp"
+                android:layout_height="150dp" />
+            <TextView
+                android:id="@+id/name_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:gravity="center" />
 
-        <TextView
-            android:id="@+id/email_user"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center" />
+            <TextView
+                android:id="@+id/email_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+
 
         <TextView
             android:id="@+id/user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btn_signout"
-            android:layout_width="wrap_content"
+        <com.alespero.expandablecardview.ExpandableCardView
+            android:id="@+id/features_product"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/signout_label" />
+            app:cardCornerRadius="16dp"
+            android:background="@color/white"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:inner_view="@layout/feature_product_layout"
+            app:title="Informacion Basica"
+            app:icon="@drawable/outline_workspaces_24"
+            app:expandOnClick="true"
+            app:animationDuration="300"
+            app:startExpanded="false"/>
+
+        <com.alespero.expandablecardview.ExpandableCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            android:background="@color/white"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:inner_view="@layout/feature_product_layout"
+            app:title="Preferencias"
+            app:icon="@drawable/outline_workspaces_24"
+            app:expandOnClick="true"
+            app:animationDuration="300"
+            app:startExpanded="false"/>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_signout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/red"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:foreground="?selectableItemBackground"
+                    android:text="@string/signout_label"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 </FrameLayout>

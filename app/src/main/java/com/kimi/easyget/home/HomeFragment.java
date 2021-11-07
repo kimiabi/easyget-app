@@ -17,14 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
-import com.kimi.easyget.categories.models.Category;
 import com.kimi.easyget.offer.adapter.AdapterOffers;
 import com.kimi.easyget.populars.adapter.AdapterPopulars;
-import com.kimi.easyget.products.ProductFragment;
 import com.kimi.easyget.products.SingleProductFragment;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
@@ -157,9 +154,9 @@ public class HomeFragment extends Fragment {
         String url3 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/products%2F3.jpg?alt=media&token=b3976230-328c-4df0-a994-5f3e1e3cfaff";
 
 
-        imageList.add(new SlideModel(url1, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
-        imageList.add(new SlideModel(url2, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
-        imageList.add(new SlideModel(url3, "lorem ipsum dolor sit amet lorem ipsum dolor sit amet", ScaleTypes.FIT));
+        imageList.add(new SlideModel(url1, "Los mejores frijoles a un mejor precio", ScaleTypes.FIT));
+        imageList.add(new SlideModel(url2, "Leche Anchor siempre contigo, espera las promociones...", ScaleTypes.FIT));
+        imageList.add(new SlideModel(url3, "Tienes que estar atento a las ofertas que pronto publicaremos", ScaleTypes.FIT));
         imageSlider.setImageList(imageList);
     }
 

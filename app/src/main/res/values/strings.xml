@@ -35,4 +35,5 @@
     <string name="minus">-</string>
     <string name="plus">+</string>
     <string name="descripcion">Descripcion:</string>
+    <string name="results_search">Se encontraron %1$s resultados de tu busqueda de %2$s </string>
 </resources>
