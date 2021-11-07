@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 .registration(FieldValue.serverTimestamp())
                 .build();
 
-        db.collection("userSessions")
+        db.collection("userSessionModels")
                 .add(session)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
