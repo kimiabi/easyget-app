@@ -53,7 +53,9 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
 
         final Product product = products.get(i);
         viewHolder.offerName.setText(product.getName());
-        viewHolder.offerPrice.setText(CURRENCY + product.getPrice());
+
+        final String price = product.isOffer() ? product.getOfferPrice() : product.getPrice();
+        viewHolder.offerPrice.setText(CURRENCY + price);
 
         ImageView imageView = ((ViewHolder) viewHolder).offerPhoto;
 

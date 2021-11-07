@@ -1,4 +1,4 @@
-package com.kimi.easyget.populars.adapter;
+package com.kimi.easyget.products.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,20 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.kimi.easyget.R;
+import com.kimi.easyget.offer.adapter.AdapterOffers;
 import com.kimi.easyget.products.models.Product;
 
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
-public class AdapterPopulars extends RecyclerView.Adapter<AdapterPopulars.ViewHolder> {
-
+public class AdapterProduct extends RecyclerView.Adapter<AdapterProduct.ViewHolder> {
     public static final String CURRENCY = "Q ";
     private List<Product> products;
     private Context context;
     private final OnItemClickListener listener;
 
-    public AdapterPopulars(final List<Product> products, final Context context, final OnItemClickListener listener) {
+    public AdapterProduct(final List<Product> products,
+                          final Context context,
+                          final OnItemClickListener listener) {
         this.products = products;
         this.context = context;
         this.listener = listener;
@@ -37,12 +39,11 @@ public class AdapterPopulars extends RecyclerView.Adapter<AdapterPopulars.ViewHo
         void onItemClickSingleProduct(final Product product);
     }
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.list_popular, viewGroup, false);
+                .inflate(R.layout.list_product, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -50,12 +51,20 @@ public class AdapterPopulars extends RecyclerView.Adapter<AdapterPopulars.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
         final Product product = products.get(i);
-        viewHolder.productPopularName.setText(product.getName());
-        viewHolder.productPopularPrice.setText(CURRENCY + product.getPrice());
-        ImageView imageView = ((ViewHolder) viewHolder).productPopularImage;
+        viewHolder.productName.setText(product.getName());
+
+        final String price = product.isOffer() ? product.getOfferPrice() : product.getPrice();
+        viewHolder.productPrice.setText(CURRENCY + price);
+
+        ImageView imageView = ((ViewHolder) viewHolder).productPhoto;
+
         if (!isNull(product.getPhoto_url()) && !product.getPhoto_url().isEmpty()) {
             Glide.with(context)
                     .load(product.getPhoto_url())
+                    .into(imageView);
+        } else {
+            Glide.with(context)
+                    .load(R.drawable.no_picture)
                     .into(imageView);
         }
 
@@ -67,23 +76,24 @@ public class AdapterPopulars extends RecyclerView.Adapter<AdapterPopulars.ViewHo
         return products.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView productPopularName, productPopularPrice;
-        ImageView productPopularImage;
-        Button addPopularBtn;
-
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView productName;
+        Button addProductBtn;
+        ImageView productPhoto;
+        TextView productPrice;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            productPopularName = itemView.findViewById(R.id.product_popular_name);
-            productPopularImage = itemView.findViewById(R.id.product_popular_image);
-            productPopularPrice = itemView.findViewById(R.id.product_popular_price);
-            addPopularBtn = itemView.findViewById(R.id.add_popular_btn);
 
+            productName = itemView.findViewById(R.id.product_name);
+            addProductBtn = itemView.findViewById(R.id.add_product_btn);
+            productPhoto = itemView.findViewById(R.id.product_photo);
+            productPrice = itemView.findViewById(R.id.product_price);
         }
 
         public void bin(final Product product, final int i, final OnItemClickListener listener) {
+
             itemView.setOnClickListener(view -> listener.onItemClickSingleProduct(product));
-            addPopularBtn.setOnClickListener(view -> listener.onItemClick(product));
+            addProductBtn.setOnClickListener(view -> listener.onItemClick(product));
         }
     }
 }

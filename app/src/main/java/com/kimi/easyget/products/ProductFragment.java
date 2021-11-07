@@ -23,6 +23,7 @@ import com.kimi.easyget.cart.model.ProductTransaction;
 import com.kimi.easyget.categories.models.CategoriesViewModel;
 import com.kimi.easyget.categories.models.Category;
 import com.kimi.easyget.offer.adapter.AdapterOffers;
+import com.kimi.easyget.products.adapter.AdapterProduct;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
 
@@ -105,8 +106,8 @@ public class ProductFragment extends Fragment {
                     }
 
                     final List<Product> products = value.toObjects(Product.class);
-                    final AdapterOffers adapterOffers = new AdapterOffers(products, getContext(),
-                            new AdapterOffers.OnItemClickListener() {
+                    final AdapterProduct adapterProduct = new AdapterProduct(products, getContext(),
+                            new AdapterProduct.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(Product product) {
                                     final ProductTransaction productTransaction = getProductTransactionResource(product);
@@ -118,8 +119,8 @@ public class ProductFragment extends Fragment {
                                     openSingleProductFragment(product);
                                 }
                             });
-                    recyclerProducts.setAdapter(adapterOffers);
-                    adapterOffers.notifyDataSetChanged();
+                    recyclerProducts.setAdapter(adapterProduct);
+                    adapterProduct.notifyDataSetChanged();
                 });
 
     }
