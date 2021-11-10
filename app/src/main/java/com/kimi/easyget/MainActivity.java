@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -136,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
                 .set(userShoppingCart)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
+                    Toast.makeText(getApplicationContext(),
+                            String.valueOf("Se agrego " + product.getName() + " con exito!"), Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "Error writing document", e);

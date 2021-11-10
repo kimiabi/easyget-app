@@ -97,6 +97,8 @@ public class HomeFragment extends Fragment {
                     final List<Product> products = value.toObjects(Product.class);
                     if (!products.isEmpty()) {
                         linearLayout.setVisibility(View.VISIBLE);
+                    }else {
+                        linearLayout.setVisibility(View.GONE);
                     }
                     Collections.reverse(products);
                     final AdapterOffers adapterOffers = new AdapterOffers(products, getContext(),

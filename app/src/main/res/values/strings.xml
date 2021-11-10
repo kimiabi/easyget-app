@@ -39,4 +39,5 @@
     <string name="suggestions_label">SUGERENCIAS</string>
     <string name="offer_label">OFERTAS</string>
     <string name="populars_label">POPULARES</string>
+    <string name="continue_btn">Continuar</string>
 </resources>
