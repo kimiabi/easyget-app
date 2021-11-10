@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
@@ -25,8 +28,10 @@ import com.kimi.easyget.populars.adapter.AdapterPopulars;
 import com.kimi.easyget.products.SingleProductFragment;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
+import com.kimi.easyget.user.models.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -34,6 +39,7 @@ public class HomeFragment extends Fragment {
 
     private ProductTransactionViewModel productTransactionViewModel;
     private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,7 @@ public class HomeFragment extends Fragment {
 
         }
         db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -55,15 +62,59 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         final ImageSlider imageSlider = view.findViewById(R.id.image_slider);
+        final RecyclerView recyclerSuggestions = view.findViewById(R.id.recycler_suggestions);
         final RecyclerView recyclerOffers = view.findViewById(R.id.recycler_offers);
         final RecyclerView recyclerPopulars = view.findViewById(R.id.recycler_populars);
 
         setSlideContent(imageSlider);
+        seRecyclerSuggestionsContent(recyclerSuggestions, view);
         setRecyclerOffersContent(recyclerOffers);
         setReyclerPopullarsContent(recyclerPopulars);
 
 
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void seRecyclerSuggestionsContent(final RecyclerView recyclerSuggestion,
+                                              final View view){
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+        recyclerSuggestion.setLayoutManager(linearLayoutManager);
+
+        final LinearLayout linearLayout = view.findViewById(R.id.label_suggestion_layout);
+
+        final User user = getCurrentUser();
+
+        productTransactionViewModel = new ViewModelProvider(requireActivity()).get(ProductTransactionViewModel.class);
+        db.collection("productsSuggestionsModels")
+                .whereEqualTo("userId", user.getUid())
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        Log.w("ERR", "Listen failed.", e);
+                        return;
+                    }
+                    final List<Product> products = value.toObjects(Product.class);
+                    if (!products.isEmpty()) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                    }
+                    Collections.reverse(products);
+                    final AdapterOffers adapterOffers = new AdapterOffers(products, getContext(),
+                            new AdapterOffers.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(final Product product) {
+                                    final ProductTransaction productTransaction = getProductSuggestionByTransactionResource(product);
+                                    productTransactionViewModel.selectProduct(productTransaction);
+                                }
+
+                                @Override
+                                public void onItemClickSingleProduct(final Product product) {
+                                    openSingleProductFragment(product);
+                                }
+                            });
+                    recyclerSuggestion.setAdapter(adapterOffers);
+                    adapterOffers.notifyDataSetChanged();
+                });
     }
 
     private void setRecyclerOffersContent(final RecyclerView recyclerOffers) {
@@ -108,6 +159,7 @@ public class HomeFragment extends Fragment {
 
         productTransactionViewModel = new ViewModelProvider(requireActivity()).get(ProductTransactionViewModel.class);
         db.collection("products")
+                .whereEqualTo("popular", true)
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
                         Log.w("ERR", "Listen failed.", e);
@@ -147,6 +199,20 @@ public class HomeFragment extends Fragment {
                 .build();
     }
 
+    private ProductTransaction getProductSuggestionByTransactionResource(final Product product) {
+        return ProductTransaction.builder()
+                .productId(product.getProductId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .photoUrl(product.getPhoto_url())
+                .price(product.getPrice())
+                .totalPrice(product.getPrice())
+                .totalQuantity("1")
+                .offer(product.isOffer())
+                .enabled(product.isEnabled())
+                .build();
+    }
+
     private void setSlideContent(final ImageSlider imageSlider) {
         final List<SlideModel> imageList = new ArrayList<>();
         String url1 = "https://firebasestorage.googleapis.com/v0/b/easyget-km.appspot.com/o/products%2F2.jpg?alt=media&token=672e654b-c769-48de-a092-fab1826ad4d8";
@@ -172,5 +238,16 @@ public class HomeFragment extends Fragment {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private User getCurrentUser() {
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        assert firebaseUser != null;
+        return User.builder()
+                .displayName(firebaseUser.getDisplayName())
+                .email(firebaseUser.getEmail())
+                .uid(firebaseUser.getUid())
+                .build();
+
     }
 }

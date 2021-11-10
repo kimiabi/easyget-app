@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static java.util.Objects.isNull;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -109,9 +110,10 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "carrito compras succ: " + snapshot.getData());
                             final UserShoppingCart userShoppingCarts =
                                     snapshot.toObject(UserShoppingCart.class);
-                            Log.d("productos=>", userShoppingCarts.getProducts().toString());
-                            products = userShoppingCarts.getProducts();
-                            textCartItemCount.setText(String.valueOf(userShoppingCarts.getProducts().size()));
+                            products = isNull(userShoppingCarts.getProducts()) ? new ArrayList<>() : userShoppingCarts.getProducts();
+
+                            final int size = isNull(userShoppingCarts.getProducts()) ? 0 : userShoppingCarts.getProducts().size();
+                            textCartItemCount.setText(String.valueOf(size));
                         } else {
                             Log.d(TAG, "Current data: null");
                         }

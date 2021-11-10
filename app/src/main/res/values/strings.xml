@@ -36,4 +36,7 @@
     <string name="plus">+</string>
     <string name="descripcion">Descripcion:</string>
     <string name="results_search">Se encontraron %1$s resultados de tu busqueda de %2$s </string>
+    <string name="suggestions_label">SUGERENCIAS</string>
+    <string name="offer_label">OFERTAS</string>
+    <string name="populars_label">POPULARES</string>
 </resources>
