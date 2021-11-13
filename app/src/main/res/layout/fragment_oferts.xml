@@ -45,6 +45,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_offers_fragment"
                 android:layout_width="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>

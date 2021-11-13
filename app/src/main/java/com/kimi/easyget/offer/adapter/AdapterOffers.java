@@ -69,6 +69,12 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
                     .into(imageView);
         }
 
+        if (product.isOffer()) {
+            viewHolder.offerIcon.setVisibility(View.VISIBLE);
+        }else {
+            viewHolder.offerIcon.setVisibility(View.GONE);
+        }
+
         viewHolder.bin(product, i, listener);
     }
 
@@ -80,7 +86,7 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView offerName;
         Button addOfferBtn;
-        ImageView offerPhoto;
+        ImageView offerPhoto, offerIcon;
         TextView offerPrice;
 
         public ViewHolder(@NonNull View itemView) {
@@ -89,6 +95,7 @@ public class AdapterOffers extends RecyclerView.Adapter<AdapterOffers.ViewHolder
             addOfferBtn = itemView.findViewById(R.id.add_offer_btn);
             offerPhoto = itemView.findViewById(R.id.offer_photo);
             offerPrice = itemView.findViewById(R.id.offer_price);
+            offerIcon = itemView.findViewById(R.id.icon_offer);
 
         }
 

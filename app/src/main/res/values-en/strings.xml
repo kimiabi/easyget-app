@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">easyget</string>
+    <string name="login_google_label">Login with Google</string>
+</resources>
