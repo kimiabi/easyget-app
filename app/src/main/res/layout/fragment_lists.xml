@@ -75,13 +75,12 @@
 <!--            TODO PONER RECYCLERVIEW, PENDIENTE-->
 
             <include layout="@layout/list_item_list"/>
-            <include layout="@layout/list_item_list"/>
-            <include layout="@layout/list_item_list"/>
-            <include layout="@layout/list_item_list"/>
-            <include layout="@layout/list_item_list"/>
-            <include layout="@layout/list_item_list"/>
-            <include layout="@layout/list_item_list"/>
-            <include layout="@layout/list_item_list"/>
+            <include layout="@layout/list_item_list_playa"/>
+            <include layout="@layout/list_item_list_cumple"/>
+            <include layout="@layout/list_item_list_nuevo"/>
+            <include layout="@layout/list_item_list_semana"/>
+            <include layout="@layout/list_item_list_evento"/>
+            <include layout="@layout/list_item_list_mascotas"/>
 
         </LinearLayout>
 
