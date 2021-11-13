@@ -33,7 +33,6 @@ public class AdapterProductsCart extends RecyclerView.Adapter<AdapterProductsCar
     }
 
     public interface OnItemClickListener {
-        void onItemClick(final ProductTransaction productTransaction);
         void onItemClickDelete(final ProductTransaction productTransaction);
         void updateTotalAmount(final int index, final ProductTransaction productTransaction);
     }

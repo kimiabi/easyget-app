@@ -40,4 +40,15 @@
     <string name="offer_label">OFERTAS</string>
     <string name="populars_label">POPULARES</string>
     <string name="continue_btn">Continuar</string>
+    <string name="product_title_label">PRODUCTO</string>
+    <string name="price_title_label">PRECIO</string>
+    <string name="edit_btn_label">Editar</string>
+    <string name="done_btn_label">Confirmar</string>
+    <string name="quetzal">Q</string>
+    <string name="subtotal_label">Subtotal</string>
+    <string name="zero_price">0.00</string>
+    <string name="total_label">Total</string>
+    <string name="street_label">Dirección</string>
+    <string name="delivery_street_title">Dirección de entrega</string>
+    <string name="payment_type_title">Tipo de pago</string>
 </resources>

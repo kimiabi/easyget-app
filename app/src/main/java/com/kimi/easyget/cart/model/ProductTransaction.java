@@ -1,6 +1,5 @@
 package com.kimi.easyget.cart.model;
 
-import com.google.firebase.firestore.FieldValue;
 import com.google.gson.Gson;
 
 import java.io.Serializable;

@@ -21,7 +21,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_products_cart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:paddingBottom="8dp"/>
 
         </LinearLayout>
         <LinearLayout
@@ -35,11 +36,12 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
                     android:paddingVertical="18dp"
                     android:textStyle="bold"
                     android:textSize="18sp"
+                    android:gravity="center|start"
                     android:text="Total"/>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -48,26 +50,27 @@
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:textSize="24sp"
                         android:textStyle="bold"
+                        android:gravity="center"
                         android:text="Q"/>
                     <TextView
                         android:id="@+id/total_amount"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingVertical="18dp"
                         android:gravity="end"
+                        android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:textSize="24sp"
-                        android:text="900909"/>
+                        android:textSize="48sp"
+                        android:text="100000"/>
                 </LinearLayout>
             </LinearLayout>
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp">
                 <LinearLayout
@@ -75,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <Button
-                        android:id="@+id/add_cart"
+                        android:id="@+id/btn_checkout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/colorPrimary"

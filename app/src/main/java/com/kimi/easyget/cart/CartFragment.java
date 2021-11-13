@@ -1,18 +1,19 @@
 package com.kimi.easyget.cart;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +25,8 @@ import com.kimi.easyget.R;
 import com.kimi.easyget.cart.adapter.AdapterProductsCart;
 import com.kimi.easyget.cart.model.ProductTransaction;
 import com.kimi.easyget.cart.model.UserShoppingCart;
+import com.kimi.easyget.checkout.CheckoutFragment;
+import com.kimi.easyget.checkout.models.Checkout;
 import com.kimi.easyget.user.models.User;
 
 import java.util.List;
@@ -50,6 +53,7 @@ public class CartFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private double totalAmountCart;
 
     public CartFragment() {
         // Required empty public constructor
@@ -96,11 +100,32 @@ public class CartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         final RecyclerView recyclerViewProductsCart = view.findViewById(R.id.recycler_products_cart);
+        final Button btnCheckout = view.findViewById(R.id.btn_checkout);
 
         totalAmount = view.findViewById(R.id.total_amount);
 
         setRecyclerProductCartContent(recyclerViewProductsCart);
+
+        btnCheckout.setOnClickListener(v -> setCheckout());
+
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void setCheckout() {
+
+        Log.d("productTransactions", String.valueOf(productTransactions));
+
+        if (productTransactions.isEmpty()) {
+            return;
+        }
+
+        final Checkout checkout = Checkout.builder()
+                .totalAmount(totalAmountCart)
+                .products(productTransactions)
+                .build();
+
+        openCheckoutFragment(checkout);
+
     }
 
     private void setRecyclerProductCartContent(final RecyclerView recyclerViewProductsCart) {
@@ -128,11 +153,6 @@ public class CartFragment extends Fragment {
                                     snapshot.toObject(UserShoppingCart.class);
                             productTransactions = userShoppingCarts.getProducts();
                             final AdapterProductsCart adapterProductsCart = new AdapterProductsCart(productTransactions, getContext(), new AdapterProductsCart.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(final ProductTransaction productTransaction) {
-
-                                }
-
                                 @Override
                                 public void onItemClickDelete(final ProductTransaction productTransaction) {
                                     removeproductTransaction(productTransaction);
@@ -182,9 +202,9 @@ public class CartFragment extends Fragment {
 
     private List<ProductTransaction> getFilteredProducts(final ProductTransaction productTransaction) {
         return this.productTransactions.stream()
-                .filter(product -> !product.getProductId().equals(productTransaction.getProductId()) )
+                .filter(product -> !product.getProductId().equals(productTransaction.getProductId()))
                 .collect(Collectors.toList());
-    };
+    }
 
     private void setTotalAmount(final TextView totalAmount, final List<ProductTransaction> products) {
         double total = 0.0;
@@ -193,6 +213,7 @@ public class CartFragment extends Fragment {
             total = total + Double.parseDouble(product.getTotalPrice());
         }
 
+        totalAmountCart = total;
         totalAmount.setText(String.valueOf(total));
     }
 
@@ -204,5 +225,19 @@ public class CartFragment extends Fragment {
                 .email(firebaseUser.getEmail())
                 .uid(firebaseUser.getUid())
                 .build();
+    }
+
+    private void openCheckoutFragment(final Checkout checkout) {
+        CheckoutFragment checkoutFragment = CheckoutFragment.newInstance(checkout);
+        addFragment(checkoutFragment);
+    }
+
+    private void addFragment(final Fragment fragment) {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack(null)
+                .commit();
     }
 }
