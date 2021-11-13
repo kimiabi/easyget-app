@@ -1,33 +1,38 @@
 package com.kimi.easyget.products;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
-import com.kimi.easyget.categories.models.CategoriesViewModel;
 import com.kimi.easyget.categories.models.Category;
-import com.kimi.easyget.offer.adapter.AdapterOffers;
 import com.kimi.easyget.products.adapter.AdapterProduct;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
+import com.kimi.easyget.products.models.ViewProductLog;
+import com.kimi.easyget.user.models.User;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
+import static com.kimi.easyget.MainActivity.DEVICE;
+import static com.kimi.easyget.MainActivity.OS;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +47,8 @@ public class ProductFragment extends Fragment {
 
     private ProductTransactionViewModel productTransactionViewModel;
     private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
+    private User user;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -65,10 +72,13 @@ public class ProductFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = FirebaseFirestore.getInstance();
         if (getArguments() != null) {
             category = (Category) getArguments().getSerializable(ARG_PARAM1);
         }
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        user = getCurrentUser();
 
     }
 
@@ -116,6 +126,7 @@ public class ProductFragment extends Fragment {
 
                                 @Override
                                 public void onItemClickSingleProduct(Product product) {
+                                    registerProductLog(product);
                                     openSingleProductFragment(product);
                                 }
                             });
@@ -151,6 +162,37 @@ public class ProductFragment extends Fragment {
                 .offer(product.isOffer())
                 .enabled(product.isEnabled())
                 .build();
+    }
+
+    private void registerProductLog(final Product product) {
+        final ViewProductLog viewProductLog = ViewProductLog.builder()
+                .productId(product.getId())
+                .categoryId(product.getCategoryId())
+                .userId(user.getUid())
+                .os(OS)
+                .device(DEVICE)
+                .createdAt(FieldValue.serverTimestamp())
+                .build();
+
+        db.collection("viewProductsModels")
+                .add(viewProductLog)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
+                });
+    }
+
+    private User getCurrentUser() {
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        assert firebaseUser != null;
+        return User.builder()
+                .displayName(firebaseUser.getDisplayName())
+                .email(firebaseUser.getEmail())
+                .uid(firebaseUser.getUid())
+                .build();
+
     }
 
 }

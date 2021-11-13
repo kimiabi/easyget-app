@@ -1,6 +1,10 @@
 package com.kimi.easyget.offer;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,14 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
@@ -23,8 +24,14 @@ import com.kimi.easyget.offer.adapter.AdapterOffers;
 import com.kimi.easyget.products.SingleProductFragment;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
+import com.kimi.easyget.products.models.ViewProductLog;
+import com.kimi.easyget.user.models.User;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
+import static com.kimi.easyget.MainActivity.DEVICE;
+import static com.kimi.easyget.MainActivity.OS;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +51,8 @@ public class OffersFragment extends Fragment {
 
     private ProductTransactionViewModel productTransactionViewModel;
     private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
+    private User user;
 
     public OffersFragment() {
         // Required empty public constructor
@@ -76,6 +85,8 @@ public class OffersFragment extends Fragment {
         }
 
         db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = getCurrentUser();
     }
 
     @Override
@@ -111,20 +122,42 @@ public class OffersFragment extends Fragment {
                     final AdapterOffers adapterOffers = new AdapterOffers(products, getContext(),
                             new AdapterOffers.OnItemClickListener() {
                                 @Override
-                                public void onItemClick(Product product) {
+                                public void onItemClick(final Product product) {
                                     final ProductTransaction productTransaction = getProductTransactionResource(product);
                                     productTransactionViewModel.selectProduct(productTransaction);
                                 }
 
                                 @Override
-                                public void onItemClickSingleProduct(Product product) {
+                                public void onItemClickSingleProduct(final Product product) {
+                                    registerProductLog(product);
                                     openSingleProductFragment(product);
                                 }
                             });
                     recyclerOffers.setAdapter(adapterOffers);
                     adapterOffers.notifyDataSetChanged();
+
                 });
 
+    }
+
+    private void registerProductLog(final Product product) {
+        final ViewProductLog viewProductLog = ViewProductLog.builder()
+                .productId(product.getId())
+                .categoryId(product.getCategoryId())
+                .userId(user.getUid())
+                .os(OS)
+                .device(DEVICE)
+                .createdAt(FieldValue.serverTimestamp())
+                .build();
+
+        db.collection("viewProductsModels")
+                .add(viewProductLog)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
+                });
     }
 
     private void openSingleProductFragment(final Product product) {
@@ -153,5 +186,16 @@ public class OffersFragment extends Fragment {
                 .offer(product.isOffer())
                 .enabled(product.isEnabled())
                 .build();
+    }
+
+    private User getCurrentUser() {
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        assert firebaseUser != null;
+        return User.builder()
+                .displayName(firebaseUser.getDisplayName())
+                .email(firebaseUser.getEmail())
+                .uid(firebaseUser.getUid())
+                .build();
+
     }
 }

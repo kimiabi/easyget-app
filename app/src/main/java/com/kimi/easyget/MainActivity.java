@@ -50,6 +50,9 @@ import static java.util.Objects.isNull;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String DEVICE = "SAMSUNG SM-A205G";
+    public static final String OS = "Android 10, API 29";
+
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
     private TextView textCartItemCount;
@@ -79,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         final User user = getCurrentUser();
         Session session = Session.builder()
                 .userId(user.getUid())
-                .device("SAMSUNG SM-A205G")
-                .OS("Android 10, API 29")
+                .device(DEVICE)
+                .OS(OS)
                 .registration(FieldValue.serverTimestamp())
                 .build();
 
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //SEARCHVIEW
-        final SearchView searchProduct = (SearchView)findViewById(R.id.search_product);
+        final SearchView searchProduct = (SearchView) findViewById(R.id.search_product);
         View v = searchProduct.findViewById(R.id.search_plate);
         v.setBackgroundColor(getColor(R.color.white));
         EditText searchEditText = searchProduct.findViewById(R.id.search_src_text);

@@ -20,6 +20,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.cart.model.ProductTransaction;
@@ -28,18 +29,24 @@ import com.kimi.easyget.populars.adapter.AdapterPopulars;
 import com.kimi.easyget.products.SingleProductFragment;
 import com.kimi.easyget.products.models.Product;
 import com.kimi.easyget.products.models.ProductTransactionViewModel;
+import com.kimi.easyget.products.models.ViewProductLog;
 import com.kimi.easyget.user.models.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 
 public class HomeFragment extends Fragment {
 
+    private static final String DEVICE = "SAMSUNG SM-A205G";
+    private static final String OS = "Android 10, API 29";
     private ProductTransactionViewModel productTransactionViewModel;
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
+    private User user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,9 @@ public class HomeFragment extends Fragment {
         }
         db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+
+        user = getCurrentUser();
+
     }
 
     @Override
@@ -76,15 +86,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void seRecyclerSuggestionsContent(final RecyclerView recyclerSuggestion,
-                                              final View view){
+                                              final View view) {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
         recyclerSuggestion.setLayoutManager(linearLayoutManager);
 
         final LinearLayout linearLayout = view.findViewById(R.id.label_suggestion_layout);
-
-        final User user = getCurrentUser();
 
         productTransactionViewModel = new ViewModelProvider(requireActivity()).get(ProductTransactionViewModel.class);
         db.collection("productsSuggestionsModels")
@@ -97,7 +105,7 @@ public class HomeFragment extends Fragment {
                     final List<Product> products = value.toObjects(Product.class);
                     if (!products.isEmpty()) {
                         linearLayout.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         linearLayout.setVisibility(View.GONE);
                     }
                     Collections.reverse(products);
@@ -111,11 +119,32 @@ public class HomeFragment extends Fragment {
 
                                 @Override
                                 public void onItemClickSingleProduct(final Product product) {
+                                    registerProductLog(product);
                                     openSingleProductFragment(product);
                                 }
                             });
                     recyclerSuggestion.setAdapter(adapterOffers);
                     adapterOffers.notifyDataSetChanged();
+                });
+    }
+
+    private void registerProductLog(final Product product) {
+        final ViewProductLog viewProductLog = ViewProductLog.builder()
+                .productId(product.getId())
+                .categoryId(product.getCategoryId())
+                .userId(user.getUid())
+                .os(OS)
+                .device(DEVICE)
+                .createdAt(FieldValue.serverTimestamp())
+                .build();
+
+        db.collection("viewProductsModels")
+                .add(viewProductLog)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
                 });
     }
 
@@ -145,6 +174,7 @@ public class HomeFragment extends Fragment {
 
                                 @Override
                                 public void onItemClickSingleProduct(final Product product) {
+                                    registerProductLog(product);
                                     openSingleProductFragment(product);
                                 }
                             });
@@ -179,6 +209,7 @@ public class HomeFragment extends Fragment {
 
                                 @Override
                                 public void onItemClickSingleProduct(Product product) {
+                                    registerProductLog(product);
                                     openSingleProductFragment(product);
                                 }
                             });

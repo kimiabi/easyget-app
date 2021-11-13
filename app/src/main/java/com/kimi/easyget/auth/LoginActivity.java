@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -14,8 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,17 +22,20 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.MainActivity;
 import com.kimi.easyget.R;
+import com.kimi.easyget.auth.models.AuthenticationLog;
 import com.kimi.easyget.user.models.User;
 import com.kimi.easyget.utils.AlertMessage;
 
 import java.util.Objects;
 
-import static java.util.Objects.isNull;
-
 public class LoginActivity extends AppCompatActivity {
 
     private static final String AUTH_PROVIDER = "GOOGLE";
     private static final String TAG = "GoogleActivity";
+    private static final String DEVICE = "SAMSUNG SM-A205G";
+    private static final String OS = "Android 10, API 29";
+    private static final String DEVICE_IP = "192.168.1.15";
+    private static final String TYPE_AUTH = "login";
     private static final int RC_SIGN_IN = 9001;
     private static final String SPACE_DELIMITER = " ";
     private FirebaseAuth firebaseAuth;
@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         try {
                             throw Objects.requireNonNull(task.getException());
-                        } catch(Exception e) {
+                        } catch (Exception e) {
                             alertMessage.show(this, getString(R.string.oh), e.getLocalizedMessage());
                         }
                     }
@@ -150,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
+                    registerAuthLog(user);
                     goToMainActivity();
                 })
                 .addOnFailureListener(e -> {
@@ -159,6 +160,28 @@ public class LoginActivity extends AppCompatActivity {
 
                 });
     }
+
+    private void registerAuthLog(final User user) {
+        final AuthenticationLog authenticationLog = AuthenticationLog.builder()
+                .device(DEVICE)
+                .ip(DEVICE_IP)
+                .os(OS)
+                .provider(AUTH_PROVIDER)
+                .registration(FieldValue.serverTimestamp())
+                .type(TYPE_AUTH)
+                .userId(user.getUid())
+                .build();
+
+        db.collection("authenticationLogsModels")
+                .add(authenticationLog)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
+                });
+    }
+
 
     private void goToMainActivity() {
         switchLoading(false);

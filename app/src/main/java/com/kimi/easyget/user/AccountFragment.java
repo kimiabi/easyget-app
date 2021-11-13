@@ -2,6 +2,7 @@ package com.kimi.easyget.user;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kimi.easyget.R;
 import com.kimi.easyget.auth.LoginActivity;
+import com.kimi.easyget.auth.models.AuthenticationLog;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,10 +38,16 @@ public class AccountFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String AUTH_PROVIDER = "GOOGLE";
+    private static final String DEVICE = "SAMSUNG SM-A205G";
+    private static final String OS = "Android 10, API 29";
+    private static final String DEVICE_IP = "192.168.1.15";
+    private static final String TYPE_AUTH = "logout";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient googleSignInClient;
+    private FirebaseFirestore db;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -70,6 +82,8 @@ public class AccountFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -81,7 +95,7 @@ public class AccountFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        firebaseAuth = FirebaseAuth.getInstance();
+
         final FirebaseUser user = firebaseAuth.getCurrentUser();
 
         final GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -109,8 +123,32 @@ public class AccountFragment extends Fragment {
 
         btnSignOut.setOnClickListener(v -> {
             firebaseAuth.signOut();
-            googleSignInClient.signOut().addOnCompleteListener(getActivity(), task -> goToLogin());
+            googleSignInClient.signOut().addOnCompleteListener(getActivity(), task -> {
+                registerAuthLog(user);
+                goToLogin();
+            });
         });
+    }
+
+    private void registerAuthLog(final FirebaseUser user) {
+        final AuthenticationLog authenticationLog = AuthenticationLog.builder()
+                .device(DEVICE)
+                .ip(DEVICE_IP)
+                .os(OS)
+                .provider(AUTH_PROVIDER)
+                .registration(FieldValue.serverTimestamp())
+                .type(TYPE_AUTH)
+                .userId(user.getUid())
+                .build();
+
+        db.collection("authenticationLogsModels")
+                .add(authenticationLog)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error writing document", e);
+                });
     }
 
     private void goToLogin() {
