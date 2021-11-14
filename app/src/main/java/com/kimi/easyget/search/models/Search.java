@@ -21,5 +21,6 @@ public class Search implements Serializable {
     FieldValue registration;
     String key;
     String select;
+    String categoryId;
     List<SearchResult> results;
 }

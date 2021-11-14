@@ -36,6 +36,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static android.content.ContentValues.TAG;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -133,7 +134,7 @@ public class SearchFragment extends Fragment {
 
                                 @Override
                                 public void onItemClickSingleProduct(Product product) {
-                                    registerSearch(filteredProduct, product.getId(), uuid);
+                                    registerSearch(filteredProduct, product, uuid);
                                     openSingleProductFragment(product);
                                 }
                             });
@@ -144,7 +145,11 @@ public class SearchFragment extends Fragment {
 
     }
 
-    private void registerSearch(final List<Product> filteredProduct, final String productId, final UUID uuid) {
+    private void registerSearch(final List<Product> filteredProduct, final Product product, final UUID uuid) {
+
+        final String productId = isNull(product) ? null : product.getId();
+        final String categoryId = isNull(product) ? null : product.getCategoryId();
+
         final User user = getCurrentUser();
         final List<SearchResult> searchResults = getSearchResultResource(filteredProduct);
         final Search search = Search.builder()
@@ -153,6 +158,7 @@ public class SearchFragment extends Fragment {
                 .key(query)
                 .results(searchResults)
                 .select(productId)
+                .categoryId(categoryId)
                 .build();
 
         db.collection("searchModels")
